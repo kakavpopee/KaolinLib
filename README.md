@@ -1,165 +1,117 @@
-# KaolinHub v2.0 — Complete Documentation
-**"Like Bricks, Built Solid."**
-**GitHub:** https://github.com/kakavpopee/KaolinLib
+# KaolinHub v3.0 — Documentation
+> *"Like Bricks, Built Solid."*  
+> Built with **KaolinLib** · by **kakavpopee**  
+> GitHub: https://github.com/kakavpopee/KaolinLib
 
 ---
 
 ## Table of Contents
 
-1. [Quick Start](#1-quick-start)
-2. [CFG Table — Hub Configuration](#2-cfg-table--hub-configuration)
-3. [Key System — Full Guide](#3-key-system--full-guide)
-4. [Premade Key System Scripts](#4-premade-key-system-scripts)
-5. [Theme System — Full Guide](#5-theme-system--full-guide)
-6. [Theme Presets](#6-theme-presets)
-7. [Emoji System](#7-emoji-system)
-8. [Movement Features](#8-movement-features)
-9. [Player Features](#9-player-features)
-10. [World Features](#10-world-features)
-11. [Players Tab](#11-players-tab)
-12. [Misc Features](#12-misc-features)
-13. [Chat Commands](#13-chat-commands)
-14. [HUD — FPS & Position Display](#14-hud--fps--position-display)
-15. [PC Keybinds](#15-pc-keybinds)
-16. [Mobile D-Pad](#16-mobile-d-pad)
-17. [State Table — Reading Feature Status](#17-state-table--reading-feature-status)
-18. [Feature Functions — API Reference](#18-feature-functions--api-reference)
-19. [Component Builders — API Reference](#19-component-builders--api-reference)
-20. [Window Controls](#20-window-controls)
-21. [Common Errors & Fixes](#21-common-errors--fixes)
-22. [Full Customised Example](#22-full-customised-example)
+| # | Section |
+|---|---------|
+| 1 | [Quick Start](#1-quick-start) |
+| 2 | [Configuration (CFG Table)](#2-configuration-cfg-table) |
+| 3 | [Key System](#3-key-system) |
+| 4 | [Key System Variants](#4-key-system-variants) |
+| 5 | [Theme System](#5-theme-system) |
+| 6 | [Theme Presets](#6-theme-presets) |
+| 7 | [Emoji System](#7-emoji-system) |
+| 8 | [Move Tab](#8-move-tab) |
+| 9 | [Player Tab](#9-player-tab) |
+| 10 | [World Tab](#10-world-tab) |
+| 11 | [Players Tab](#11-players-tab) |
+| 12 | [Misc Tab](#12-misc-tab) |
+| 13 | [Chat Commands](#13-chat-commands) |
+| 14 | [Mobile D-Pad](#14-mobile-d-pad) |
+| 15 | [PC Keybinds](#15-pc-keybinds) |
+| 16 | [State Table Reference](#16-state-table-reference) |
+| 17 | [Feature Functions API](#17-feature-functions-api) |
+| 18 | [KaolinLib Component API](#18-kaolinlib-component-api) |
+| 19 | [Window Controls](#19-window-controls) |
+| 20 | [Troubleshooting](#20-troubleshooting) |
+| 21 | [Custom Tab Example](#21-custom-tab-example) |
 
 ---
 
 ## 1. Quick Start
 
-### Load from GitHub
+### Requirements
+- A **LocalScript** inside `StarterPlayerScripts`
+- **HTTP Requests enabled:** Studio → Game Settings → Security → Allow HTTP Requests → ON
 
-Paste this at the very top of a **LocalScript** inside `StarterPlayerScripts`:
+### Load the hub
 
 ```lua
+-- Paste this into a LocalScript in StarterPlayerScripts
 loadstring(game:HttpGet(
     "https://raw.githubusercontent.com/kakavpopee/KaolinLib/main/KaolinLib.lua"
 ))()
 ```
 
-> **HTTP Requests must be enabled.**
-> Studio → Home → Game Settings → Security → Allow HTTP Requests → ON
-
-That's it. The hub loads, the Key System screen appears, and players must type the correct key to open the hub.
+That's all. On run the key screen appears. Type the correct key and press Enter. The hub slides in.
 
 ---
 
-## 2. CFG Table — Hub Configuration
+## 2. Configuration (CFG Table)
 
-The `CFG` table is at the very top of the script. It controls the key, title, version, and creator name. Change these before uploading to GitHub.
-
-```lua
-local CFG = {
-    Key      = "KAOLIN2024",         -- The key players must type
-    KeyHint  = "Enter your access key",  -- Hint shown below the title on the key screen
-    Title    = "KaolinHub",          -- Title shown in the title bar and key screen
-    Version  = "v2.0",               -- Version shown in the title bar subtitle
-    Creator  = "kakavpopee",         -- Creator name shown in title bar subtitle
-}
-```
-
-### Changing the key
-
-Find `CFG.Key` and replace the value:
+The `CFG` table is at the very top of the script. Edit these values before publishing.
 
 ```lua
 local CFG = {
-    Key     = "MySecretKey123",   -- players must type exactly this
-    KeyHint = "DM me for the key",
-    Title   = "MyHub",
-    Version = "v1.0",
-    Creator = "YourName",
+    Key      = "KAOLIN2024",          -- what players must type to unlock the hub
+    KeyHint  = "Enter your access key", -- subtitle on the key screen
+    Title    = "KaolinHub",           -- hub name shown in the title bar
+    Version  = "v3.0",                -- version shown next to the title
+    Creator  = "kakavpopee",          -- creator name in the subtitle
 }
 ```
 
-The key is **case-sensitive**. `"KAOLIN2024"` and `"kaolin2024"` are different keys.
+The key is **case-sensitive.** `"KAOLIN2024"` and `"kaolin2024"` are different keys.
 
 ---
 
-## 3. Key System — Full Guide
+## 3. Key System
 
-### What it does
-
-When the script loads, a **full-screen lock screen** appears before the hub. The player must type the correct key and press Enter or click Verify. If the key is wrong, the card shakes and an error message appears. If the key is correct, the screen fades out and the hub slides in.
-
-### How it works step by step
+### How it works
 
 ```
 Script loads
-    └── Key GUI appears (full-screen overlay)
-            └── Player types key + presses Enter or clicks Verify
-                    ├── CORRECT → green flash → screen fades → hub slides in
-                    └── WRONG   → card shakes → red error → input clears → try again
+  └─ Key overlay appears (full-screen, blocks the hub)
+       └─ Player types key → Enter or clicks Verify
+              ├─ CORRECT  →  green flash → overlay fades → hub slides in
+              └─ WRONG    →  card shakes → red error → input clears → try again
 ```
 
-### Key verification logic
-
-The verification function inside the script:
+### Verification logic
 
 ```lua
 local function VerifyKey()
     local input = keyInput.Text
+
     if input == CFG.Key then
-        -- SUCCESS path
+        -- success: fade overlay, slide in hub
         keyMsg.TextColor3 = T.Green
         keyMsg.Text       = E.CHECK .. "  Access Granted!"
-        -- ... fades key screen, enables hub GUI
+        task.wait(0.8)
+        KeyGui:Destroy()
+        ScreenGui.Enabled = true
+
     else
-        -- FAIL path
-        keyMsg.Text = E.CROSS .. "  Invalid key. Try again."
-        task.spawn(ShakeCard)   -- shake animation
-        keyInput.Text = ""      -- clear input
+        -- fail: shake card, show error, clear input
+        keyMsg.TextColor3 = T.Red
+        keyMsg.Text       = E.CROSS .. "  Invalid key. Try again."
+        task.spawn(ShakeCard)
+        keyInput.Text = ""
     end
 end
 ```
 
-### Changing what happens on wrong key
+### Skip the key screen (testing only)
 
-You can edit the fail path to add a kick, a warning, or extra logging. Find `-- FAIL` inside `VerifyKey()`:
-
-```lua
--- FAIL path - add your own logic here
-keyMsg.TextColor3 = T.Red
-keyMsg.Text       = E.CROSS .. "  Invalid key. Try again."
-task.spawn(ShakeCard)
-keyInput.Text = ""
-
--- Example: add a wait penalty after 3 wrong attempts
-wrongAttempts = (wrongAttempts or 0) + 1
-if wrongAttempts >= 3 then
-    keyMsg.Text = "Too many attempts. Wait 10s."
-    verifyBtn.Active = false
-    task.delay(10, function()
-        verifyBtn.Active = true
-        wrongAttempts = 0
-        keyMsg.Text = ""
-    end)
-end
-```
-
-### Bypassing the key system (testing only)
-
-If you want to skip the key screen during testing, change:
+Find `ScreenGui.Enabled = false` and change it to `true`. Then destroy the key GUI manually at the bottom of the script:
 
 ```lua
-ScreenGui.Enabled = false  -- hidden until key passes
-```
-
-to:
-
-```lua
-ScreenGui.Enabled = true   -- skip key screen
-```
-
-And add at the bottom of the script, right before the `print` line:
-
-```lua
+-- Add this just before the final print() line
 if LocalPlayer.PlayerGui:FindFirstChild("KaolinKeyGui") then
     LocalPlayer.PlayerGui.KaolinKeyGui:Destroy()
 end
@@ -167,65 +119,27 @@ end
 
 ---
 
-## 4. Premade Key System Scripts
+## 4. Key System Variants
 
-These are complete ready-to-use variations of the `CFG` block. Copy and paste any of these over the existing CFG at the top of KaolinHub.
+### A — Single static key (default)
 
----
-
-### Script A — Single Static Key (default)
-
-Simple. One key. Everyone who knows it can open the hub.
+One key, everyone who knows it gets access.
 
 ```lua
 local CFG = {
-    Key      = "KAOLIN2024",
-    KeyHint  = "Enter your access key",
-    Title    = "KaolinHub",
-    Version  = "v2.0",
-    Creator  = "kakavpopee",
+    Key     = "KAOLIN2024",
+    KeyHint = "Enter your access key",
+    Title   = "KaolinHub",
+    Version = "v3.0",
+    Creator = "kakavpopee",
 }
 ```
 
 ---
 
-### Script B — Whitelist System (multiple allowed keys)
+### B — Multiple keys (whitelist)
 
-Allows several different keys. Useful for giving different players unique keys.
-
-```lua
-local CFG = {
-    Key      = "",   -- leave blank, not used in whitelist mode
-    KeyHint  = "Enter your personal key",
-    Title    = "KaolinHub",
-    Version  = "v2.0",
-    Creator  = "kakavpopee",
-}
-
--- Whitelist: add as many keys as you want
-local VALID_KEYS = {
-    "KAOLIN-ALPHA-001",
-    "KAOLIN-BETA-002",
-    "KAOLIN-VIP-999",
-    "YourFriendKey",
-    "AnotherKey123",
-}
-
--- Replace VerifyKey() body with this:
--- Find the function `local function VerifyKey()` and replace the
--- `if input == CFG.Key then` line with:
---
---   local valid = false
---   for _, k in ipairs(VALID_KEYS) do
---       if input == k then valid = true break end
---   end
---   if valid then
---       ... (success code)
---   else
---       ... (fail code)
-```
-
-Full drop-in replacement for the `VerifyKey` function:
+Each player can have their own unique key.
 
 ```lua
 local VALID_KEYS = {
@@ -233,6 +147,23 @@ local VALID_KEYS = {
     "KAOLIN-BETA-002",
     "KAOLIN-VIP-999",
 }
+
+-- Replace the line `if input == CFG.Key then` with:
+local valid = false
+for _, k in ipairs(VALID_KEYS) do
+    if input == k then valid = true break end
+end
+if valid then
+    -- success code ...
+else
+    -- fail code ...
+end
+```
+
+Full drop-in `VerifyKey` function:
+
+```lua
+local VALID_KEYS = { "KAOLIN-ALPHA-001", "KAOLIN-BETA-002", "KAOLIN-VIP-999" }
 
 local function VerifyKey()
     local input = keyInput.Text
@@ -243,11 +174,10 @@ local function VerifyKey()
 
     if valid then
         keyMsg.TextColor3 = T.Green
-        keyMsg.Text       = E.CHECK .. "  Access Granted!"
+        keyMsg.Text = E.CHECK .. "  Access Granted!"
         Tw(verifyBtn, {BackgroundColor3 = T.Green}, TW_FAST)
-        Tw(cardStroke, {Color = T.Green}, TW_FAST)
         task.wait(0.8)
-        Tw(KeyOverlay, {BackgroundTransparency = 1}, TweenInfo.new(0.5, Enum.EasingStyle.Quad))
+        Tw(KeyOverlay, {BackgroundTransparency = 1}, TweenInfo.new(0.5))
         task.wait(0.5)
         KeyGui:Destroy()
         ScreenGui.Enabled = true
@@ -255,13 +185,10 @@ local function VerifyKey()
         Tw(Main, {Position = UDim2.new(0.5, -GUI_W/2, 0.5, -GUI_H/2)}, TW_BACK)
     else
         keyMsg.TextColor3 = T.Red
-        keyMsg.Text       = E.CROSS .. "  Invalid key. Try again."
+        keyMsg.Text = E.CROSS .. "  Invalid key. Try again."
         Tw(inputStroke, {Color = T.Red}, TW_FAST)
         task.spawn(ShakeCard)
-        task.delay(1.5, function()
-            keyMsg.Text = ""
-            Tw(inputStroke, {Color = T.TextDim}, TW_FAST)
-        end)
+        task.delay(1.5, function() keyMsg.Text = "" end)
         keyInput.Text = ""
     end
 end
@@ -269,19 +196,13 @@ end
 
 ---
 
-### Script C — Username Whitelist (no key needed, just username)
+### C — Username whitelist (no typing needed)
 
-Players with matching Roblox usernames automatically pass. No typing required.
-
-Replace the full `VerifyKey()` function AND the key screen setup with this:
+Players whose Roblox username is in the list skip the key screen entirely.
 
 ```lua
--- Put this block BEFORE the Key GUI section (before "local KeyGui = ...")
-local ALLOWED_USERS = {
-    "kakavpopee",
-    "YourFriendUsername",
-    "AnotherTrustedUser",
-}
+-- Paste this BEFORE the Key GUI section
+local ALLOWED_USERS = { "kakavpopee", "YourFriend", "AnotherUser" }
 
 local isAllowed = false
 for _, name in ipairs(ALLOWED_USERS) do
@@ -289,23 +210,17 @@ for _, name in ipairs(ALLOWED_USERS) do
 end
 
 if isAllowed then
-    -- Skip key screen entirely
     ScreenGui.Enabled = true
     Main.Position = UDim2.new(0.5, -GUI_W/2, -0.6, 0)
     Tw(Main, {Position = UDim2.new(0.5, -GUI_W/2, 0.5, -GUI_H/2)}, TW_BACK)
 else
-    -- Show key screen as normal for non-whitelisted players
-    -- (keep the rest of the Key GUI code)
+    -- rest of the Key GUI code runs normally for everyone else
 end
 ```
 
 ---
 
-### Script D — Attempt Limiter (lockout after X wrong tries)
-
-Locks the input after 3 wrong attempts for 30 seconds.
-
-Paste this right after `local wrongAttempts = 0` at the top of the script, then use this `VerifyKey`:
+### D — Attempt limiter (lockout after 3 wrong tries)
 
 ```lua
 local wrongAttempts = 0
@@ -314,33 +229,21 @@ local lockedOut     = false
 local function VerifyKey()
     if lockedOut then
         keyMsg.TextColor3 = T.Red
-        keyMsg.Text = E.WARN .. "  Locked. Wait for cooldown."
+        keyMsg.Text = E.WARN .. "  Locked out. Wait 30s."
         return
     end
 
     local input = keyInput.Text
     if input == CFG.Key then
         wrongAttempts = 0
-        keyMsg.TextColor3 = T.Green
-        keyMsg.Text = E.CHECK .. "  Access Granted!"
-        Tw(verifyBtn, {BackgroundColor3 = T.Green}, TW_FAST)
-        Tw(cardStroke, {Color = T.Green}, TW_FAST)
-        task.wait(0.8)
-        Tw(KeyOverlay, {BackgroundTransparency = 1}, TweenInfo.new(0.5, Enum.EasingStyle.Quad))
-        task.wait(0.5)
-        KeyGui:Destroy()
-        ScreenGui.Enabled = true
-        Main.Position = UDim2.new(0.5, -GUI_W/2, -0.6, 0)
-        Tw(Main, {Position = UDim2.new(0.5, -GUI_W/2, 0.5, -GUI_H/2)}, TW_BACK)
+        -- ... success code ...
     else
-        wrongAttempts = wrongAttempts + 1
-        keyInput.Text  = ""
+        wrongAttempts += 1
+        keyInput.Text = ""
         task.spawn(ShakeCard)
-        Tw(inputStroke, {Color = T.Red}, TW_FAST)
 
         if wrongAttempts >= 3 then
             lockedOut = true
-            keyMsg.TextColor3 = T.Red
             keyMsg.Text = E.WARN .. "  3 wrong attempts. Locked 30s."
             verifyBtn.Active = false
             task.delay(30, function()
@@ -348,15 +251,11 @@ local function VerifyKey()
                 wrongAttempts = 0
                 verifyBtn.Active = true
                 keyMsg.Text = ""
-                Tw(inputStroke, {Color = T.TextDim}, TW_FAST)
             end)
         else
             keyMsg.TextColor3 = T.Red
-            keyMsg.Text = E.CROSS .. "  Wrong key. " .. (3 - wrongAttempts) .. " attempts left."
-            task.delay(1.5, function()
-                keyMsg.Text = ""
-                Tw(inputStroke, {Color = T.TextDim}, TW_FAST)
-            end)
+            keyMsg.Text = E.CROSS .. "  Wrong. " .. (3 - wrongAttempts) .. " left."
+            task.delay(1.5, function() keyMsg.Text = "" end)
         end
     end
 end
@@ -364,189 +263,136 @@ end
 
 ---
 
-## 5. Theme System — Full Guide
+## 5. Theme System
 
-The theme is controlled by the `T` table near the top of the script (after the HUD section). Every color used in the entire GUI comes from this one table. Change any value here and the whole hub updates automatically.
-
-```lua
-local T = {
-    Accent    = Color3.fromRGB(200, 160, 80),   -- Gold: title bar, toggles, sliders, accents
-    AccentDk  = Color3.fromRGB(160, 120, 50),   -- Darker gold: button hover state
-    BgRoot    = Color3.fromRGB(15,  15,  20),   -- Darkest bg: main window background
-    BgDark    = Color3.fromRGB(10,  10,  14),   -- Tab sidebar background
-    BgCard    = Color3.fromRGB(24,  24,  32),   -- Toggle/slider/label card background
-    BgContent = Color3.fromRGB(19,  19,  26),   -- Content area background (right panel)
-    TextMain  = Color3.fromRGB(225, 225, 230),  -- Primary text on components
-    TextDim   = Color3.fromRGB(95,  95,  112),  -- Secondary/description text
-    TextOn    = Color3.fromRGB(15,  15,  20),   -- Text drawn on top of Accent color
-    TogOff    = Color3.fromRGB(50,  50,  62),   -- Toggle pill when OFF
-    SlTrack   = Color3.fromRGB(40,  40,  52),   -- Slider unfilled track
-    Red       = Color3.fromRGB(220, 70,  70),   -- Error messages, wrong key
-    Green     = Color3.fromRGB(70,  200, 110),  -- Success messages, correct key
-}
-```
-
-### Color Reference Table
-
-| Key | Where it appears | Default |
-|-----|-----------------|---------|
-| `Accent` | Title bar, toggle ON, slider fill, section headers, button borders, scrollbar | Gold `(200,160,80)` |
-| `AccentDk` | Button hover background, darker highlights | Dark gold `(160,120,50)` |
-| `BgRoot` | Main window background | Near-black `(15,15,20)` |
-| `BgDark` | Left sidebar background | Darkest `(10,10,14)` |
-| `BgCard` | Every toggle, slider, label card | Dark card `(24,24,32)` |
-| `BgContent` | Right content panel | Slightly lighter dark `(19,19,26)` |
-| `TextMain` | All main labels on components | Near-white `(225,225,230)` |
-| `TextDim` | Description text, dim labels | Grey `(95,95,112)` |
-| `TextOn` | Text that sits on top of the Accent color (title bar text, tab active text) | Dark `(15,15,20)` |
-| `TogOff` | Toggle switch background when OFF | Dark grey `(50,50,62)` |
-| `SlTrack` | Slider unfilled background track | Dark grey `(40,40,52)` |
-| `Red` | Error messages, wrong key highlight | Red `(220,70,70)` |
-| `Green` | Success messages, correct key highlight | Green `(70,200,110)` |
-
-### How to change a theme
-
-Find the `T` table in the script (search for `local T = {`) and change any values:
+All colours come from the `T` table inside the script. Change any value here and the entire UI updates automatically.
 
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(80, 160, 255),  -- change gold to blue
-    AccentDk  = Color3.fromRGB(50, 120, 200),
-    BgRoot    = Color3.fromRGB(10, 10, 18),
-    -- leave the rest as defaults
-    ...
+    -- Accent colours
+    Accent    = Color3.fromRGB(200, 160, 80),   -- title bar, toggles ON, sliders, borders
+    AccentDk  = Color3.fromRGB(160, 120, 50),   -- button hover state
+
+    -- Backgrounds
+    BgRoot    = Color3.fromRGB(15,  15,  20),   -- main window background
+    BgDark    = Color3.fromRGB(10,  10,  14),   -- left sidebar
+    BgCard    = Color3.fromRGB(24,  24,  32),   -- toggle / slider / label cards
+    BgContent = Color3.fromRGB(19,  19,  26),   -- right content panel
+
+    -- Text
+    TextMain  = Color3.fromRGB(225, 225, 230),  -- primary label text
+    TextDim   = Color3.fromRGB(95,  95,  112),  -- description / dim text
+    TextOn    = Color3.fromRGB(15,  15,  20),   -- text drawn on top of Accent
+
+    -- Component states
+    TogOff    = Color3.fromRGB(50,  50,  62),   -- toggle pill when OFF
+    SlTrack   = Color3.fromRGB(40,  40,  52),   -- slider unfilled track
+
+    -- Status colours
+    Red       = Color3.fromRGB(220, 70,  70),   -- errors, wrong key
+    Green     = Color3.fromRGB(70,  200, 110),  -- success, correct key
 }
 ```
+
+### Quick reference
+
+| Key | Appears on | Default colour |
+|-----|-----------|---------------|
+| `Accent` | Title bar, toggle ON, slider fill, section headers | Gold `(200,160,80)` |
+| `AccentDk` | Button hover | Dark gold `(160,120,50)` |
+| `BgRoot` | Main window | Near-black `(15,15,20)` |
+| `BgDark` | Sidebar | Darkest `(10,10,14)` |
+| `BgCard` | Every toggle, slider, label | Dark card `(24,24,32)` |
+| `BgContent` | Right content panel | `(19,19,26)` |
+| `TextMain` | All primary labels | Near-white `(225,225,230)` |
+| `TextDim` | Descriptions, subtitles | Grey `(95,95,112)` |
+| `TextOn` | Text sitting on Accent (title, active tab) | Dark `(15,15,20)` |
+| `TogOff` | Toggle pill when OFF | Dark grey `(50,50,62)` |
+| `SlTrack` | Slider unfilled track | `(40,40,52)` |
+| `Red` | Errors, wrong key | `(220,70,70)` |
+| `Green` | Success, correct key | `(70,200,110)` |
 
 ---
 
 ## 6. Theme Presets
 
-Copy and paste any of these over the entire `T = { ... }` block in the script.
+Copy any block and paste it over the entire `T = { ... }` section in the script.
 
----
-
-### Default Gold (built-in)
+### Default Gold
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(200, 160, 80),
-    AccentDk  = Color3.fromRGB(160, 120, 50),
-    BgRoot    = Color3.fromRGB(15,  15,  20),
-    BgDark    = Color3.fromRGB(10,  10,  14),
-    BgCard    = Color3.fromRGB(24,  24,  32),
-    BgContent = Color3.fromRGB(19,  19,  26),
-    TextMain  = Color3.fromRGB(225, 225, 230),
-    TextDim   = Color3.fromRGB(95,  95,  112),
-    TextOn    = Color3.fromRGB(15,  15,  20),
-    TogOff    = Color3.fromRGB(50,  50,  62),
-    SlTrack   = Color3.fromRGB(40,  40,  52),
-    Red       = Color3.fromRGB(220, 70,  70),
-    Green     = Color3.fromRGB(70,  200, 110),
+    Accent = Color3.fromRGB(200,160,80), AccentDk = Color3.fromRGB(160,120,50),
+    BgRoot = Color3.fromRGB(15,15,20),   BgDark   = Color3.fromRGB(10,10,14),
+    BgCard = Color3.fromRGB(24,24,32),   BgContent= Color3.fromRGB(19,19,26),
+    TextMain = Color3.fromRGB(225,225,230), TextDim= Color3.fromRGB(95,95,112),
+    TextOn = Color3.fromRGB(15,15,20),   TogOff  = Color3.fromRGB(50,50,62),
+    SlTrack= Color3.fromRGB(40,40,52),   Red     = Color3.fromRGB(220,70,70),
+    Green  = Color3.fromRGB(70,200,110),
 }
 ```
-
----
 
 ### Ice Blue
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(80,  170, 255),
-    AccentDk  = Color3.fromRGB(50,  130, 210),
-    BgRoot    = Color3.fromRGB(10,  12,  20),
-    BgDark    = Color3.fromRGB(6,   8,   16),
-    BgCard    = Color3.fromRGB(18,  22,  36),
-    BgContent = Color3.fromRGB(14,  18,  28),
-    TextMain  = Color3.fromRGB(220, 230, 245),
-    TextDim   = Color3.fromRGB(80,  100, 140),
-    TextOn    = Color3.fromRGB(6,   10,  20),
-    TogOff    = Color3.fromRGB(40,  50,  72),
-    SlTrack   = Color3.fromRGB(30,  40,  60),
-    Red       = Color3.fromRGB(220, 70,  70),
-    Green     = Color3.fromRGB(70,  200, 110),
+    Accent = Color3.fromRGB(80,170,255),  AccentDk = Color3.fromRGB(50,130,210),
+    BgRoot = Color3.fromRGB(10,12,20),    BgDark   = Color3.fromRGB(6,8,16),
+    BgCard = Color3.fromRGB(18,22,36),    BgContent= Color3.fromRGB(14,18,28),
+    TextMain = Color3.fromRGB(220,230,245),TextDim = Color3.fromRGB(80,100,140),
+    TextOn = Color3.fromRGB(6,10,20),     TogOff  = Color3.fromRGB(40,50,72),
+    SlTrack= Color3.fromRGB(30,40,60),    Red     = Color3.fromRGB(220,70,70),
+    Green  = Color3.fromRGB(70,200,110),
 }
 ```
-
----
 
 ### Blood Red
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(210, 50,  50),
-    AccentDk  = Color3.fromRGB(165, 30,  30),
-    BgRoot    = Color3.fromRGB(14,  10,  10),
-    BgDark    = Color3.fromRGB(9,   6,   6),
-    BgCard    = Color3.fromRGB(28,  18,  18),
-    BgContent = Color3.fromRGB(22,  14,  14),
-    TextMain  = Color3.fromRGB(235, 220, 220),
-    TextDim   = Color3.fromRGB(120, 80,  80),
-    TextOn    = Color3.fromRGB(14,  8,   8),
-    TogOff    = Color3.fromRGB(60,  35,  35),
-    SlTrack   = Color3.fromRGB(48,  28,  28),
-    Red       = Color3.fromRGB(220, 70,  70),
-    Green     = Color3.fromRGB(70,  200, 110),
+    Accent = Color3.fromRGB(210,50,50),   AccentDk = Color3.fromRGB(165,30,30),
+    BgRoot = Color3.fromRGB(14,10,10),    BgDark   = Color3.fromRGB(9,6,6),
+    BgCard = Color3.fromRGB(28,18,18),    BgContent= Color3.fromRGB(22,14,14),
+    TextMain = Color3.fromRGB(235,220,220),TextDim = Color3.fromRGB(120,80,80),
+    TextOn = Color3.fromRGB(14,8,8),      TogOff  = Color3.fromRGB(60,35,35),
+    SlTrack= Color3.fromRGB(48,28,28),    Red     = Color3.fromRGB(220,70,70),
+    Green  = Color3.fromRGB(70,200,110),
 }
 ```
-
----
 
 ### Toxic Green
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(80,  220, 100),
-    AccentDk  = Color3.fromRGB(55,  170, 75),
-    BgRoot    = Color3.fromRGB(10,  14,  10),
-    BgDark    = Color3.fromRGB(6,   10,  6),
-    BgCard    = Color3.fromRGB(18,  26,  18),
-    BgContent = Color3.fromRGB(14,  20,  14),
-    TextMain  = Color3.fromRGB(210, 240, 210),
-    TextDim   = Color3.fromRGB(80,  120, 80),
-    TextOn    = Color3.fromRGB(8,   14,  8),
-    TogOff    = Color3.fromRGB(35,  55,  35),
-    SlTrack   = Color3.fromRGB(28,  44,  28),
-    Red       = Color3.fromRGB(220, 70,  70),
-    Green     = Color3.fromRGB(70,  200, 110),
+    Accent = Color3.fromRGB(80,220,100),  AccentDk = Color3.fromRGB(55,170,75),
+    BgRoot = Color3.fromRGB(10,14,10),    BgDark   = Color3.fromRGB(6,10,6),
+    BgCard = Color3.fromRGB(18,26,18),    BgContent= Color3.fromRGB(14,20,14),
+    TextMain = Color3.fromRGB(210,240,210),TextDim = Color3.fromRGB(80,120,80),
+    TextOn = Color3.fromRGB(8,14,8),      TogOff  = Color3.fromRGB(35,55,35),
+    SlTrack= Color3.fromRGB(28,44,28),    Red     = Color3.fromRGB(220,70,70),
+    Green  = Color3.fromRGB(70,200,110),
 }
 ```
-
----
 
 ### Purple / Violet
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(165, 90,  255),
-    AccentDk  = Color3.fromRGB(120, 55,  200),
-    BgRoot    = Color3.fromRGB(12,  10,  20),
-    BgDark    = Color3.fromRGB(8,   6,   16),
-    BgCard    = Color3.fromRGB(24,  18,  38),
-    BgContent = Color3.fromRGB(18,  14,  30),
-    TextMain  = Color3.fromRGB(230, 220, 245),
-    TextDim   = Color3.fromRGB(100, 80,  140),
-    TextOn    = Color3.fromRGB(8,   6,   18),
-    TogOff    = Color3.fromRGB(50,  35,  72),
-    SlTrack   = Color3.fromRGB(40,  28,  58),
-    Red       = Color3.fromRGB(220, 70,  70),
-    Green     = Color3.fromRGB(70,  200, 110),
+    Accent = Color3.fromRGB(165,90,255),  AccentDk = Color3.fromRGB(120,55,200),
+    BgRoot = Color3.fromRGB(12,10,20),    BgDark   = Color3.fromRGB(8,6,16),
+    BgCard = Color3.fromRGB(24,18,38),    BgContent= Color3.fromRGB(18,14,30),
+    TextMain = Color3.fromRGB(230,220,245),TextDim = Color3.fromRGB(100,80,140),
+    TextOn = Color3.fromRGB(8,6,18),      TogOff  = Color3.fromRGB(50,35,72),
+    SlTrack= Color3.fromRGB(40,28,58),    Red     = Color3.fromRGB(220,70,70),
+    Green  = Color3.fromRGB(70,200,110),
 }
 ```
 
----
-
-### White / Minimal Light Mode
+### Light Mode
 ```lua
 local T = {
-    Accent    = Color3.fromRGB(50,  50,  50),
-    AccentDk  = Color3.fromRGB(30,  30,  30),
-    BgRoot    = Color3.fromRGB(245, 245, 248),
-    BgDark    = Color3.fromRGB(225, 225, 230),
-    BgCard    = Color3.fromRGB(255, 255, 255),
-    BgContent = Color3.fromRGB(240, 240, 244),
-    TextMain  = Color3.fromRGB(30,  30,  40),
-    TextDim   = Color3.fromRGB(140, 140, 160),
-    TextOn    = Color3.fromRGB(245, 245, 248),
-    TogOff    = Color3.fromRGB(190, 190, 200),
-    SlTrack   = Color3.fromRGB(210, 210, 220),
-    Red       = Color3.fromRGB(200, 50,  50),
-    Green     = Color3.fromRGB(50,  170, 80),
+    Accent = Color3.fromRGB(50,50,50),    AccentDk = Color3.fromRGB(30,30,30),
+    BgRoot = Color3.fromRGB(245,245,248), BgDark   = Color3.fromRGB(225,225,230),
+    BgCard = Color3.fromRGB(255,255,255), BgContent= Color3.fromRGB(240,240,244),
+    TextMain = Color3.fromRGB(30,30,40),  TextDim  = Color3.fromRGB(140,140,160),
+    TextOn = Color3.fromRGB(245,245,248), TogOff   = Color3.fromRGB(190,190,200),
+    SlTrack= Color3.fromRGB(210,210,220), Red      = Color3.fromRGB(200,50,50),
+    Green  = Color3.fromRGB(50,170,80),
 }
 ```
 
@@ -554,578 +400,537 @@ local T = {
 
 ## 7. Emoji System
 
-KaolinHub stores every emoji as **UTF-8 byte escape sequences** in the `E` table. This is the only reliable way to use emojis in Roblox on mobile — raw emoji characters in source code break depending on how the file is saved or transferred.
+Emojis are stored in the `E` table as **UTF-8 byte escape sequences**. This is the only reliable method — pasting raw emoji into a Lua file often breaks on mobile or different editors.
 
 ```lua
 local E = {
-    BRICK  = "\240\159\167\177",   -- Used in title bar, about section
-    RUN    = "\240\159\143\131",   -- Movement tab icon
-    PERSON = "\240\159\145\164",   -- Player tab icon
-    PEOPLE = "\240\159\145\165",   -- Players tab icon
-    EARTH  = "\240\159\140\141",   -- World tab icon
-    GEAR   = "\226\154\153",       -- Misc tab icon
-    CROSS  = "\226\156\149",       -- Close button, error messages
-    DASH   = "\226\136\146",       -- Minimise button
-    UP     = "\226\172\134",       -- D-pad forward
-    DOWN   = "\226\172\135",       -- D-pad backward
-    LEFT   = "\226\172\133",       -- D-pad left
-    RIGHT  = "\226\158\161",       -- D-pad right, buttons arrow
-    RISE   = "\240\159\148\188",   -- D-pad up, dropdown open
-    FALL   = "\240\159\148\189",   -- D-pad down, dropdown closed
-    STAR   = "\226\152\133",       -- Minimised icon, Lock Sun, presets
-    CHECK  = "\226\156\147",       -- Key success message
-    LOCK   = "\240\159\148\146",   -- Unused (available for your use)
-    KEY    = "\240\159\148\145",   -- Key screen icon, verify button
-    FLASH  = "\226\154\161",       -- Fullbright toggle
-    EYE    = "\240\159\145\129",   -- ESP, Invisible, Spectate
-    SHIELD = "\240\159\155\161",   -- God Mode
-    CHAT   = "\240\159\146\172",   -- Chat Commands section
-    HOSP   = "\240\159\143\165",   -- God Mode, Auto Heal, heal button
-    SPIN   = "\240\159\140\128",   -- Spin toggle
-    MAP    = "\240\159\151\186",   -- Teleport buttons
-    SAVE   = "\240\159\146\190",   -- Save Position button
-    WARN   = "\226\154\160",       -- Warning messages
-    SKULL  = "\240\159\146\128",   -- Ghost Mode
+    RUN    = "\240\159\143\131",   -- running man   (Move tab icon)
+    PERSON = "\240\159\145\164",   -- bust           (Player tab icon)
+    EARTH  = "\240\159\140\141",   -- globe          (World tab icon)
+    PEOPLE = "\240\159\145\165",   -- two people     (Players tab icon)
+    GEAR   = "\226\154\153",       -- gear           (Misc tab icon)
+    SHIELD = "\240\159\155\161",   -- shield         (God Mode)
+    EYE    = "\240\159\145\129",   -- eye            (ESP, Invisible, Spectate)
+    SKULL  = "\240\159\146\128",   -- skull          (Ghost Mode)
+    SPIN   = "\240\159\140\128",   -- cyclone        (Spin toggle)
+    SAVE   = "\240\159\146\190",   -- floppy disk    (Save Position)
+    MAP    = "\240\159\151\186",   -- map            (Teleport buttons)
+    FLASH  = "\226\154\161",       -- lightning bolt (Fullbright)
+    STAR   = "\226\152\133",       -- star           (Lock Sun)
+    CHECK  = "\226\156\147",       -- checkmark      (Key success)
+    CROSS  = "\226\156\149",       -- cross          (Key error)
+    WARN   = "\226\154\160",       -- warning        (Lockout messages)
+    HOSP   = "\240\159\143\165",   -- hospital       (Auto Heal, God Mode)
+    CHAT   = "\240\159\146\172",   -- speech bubble  (Chat Commands)
+    PAINT  = "\240\159\142\168",   -- artist palette (Color pickers)
+    SPEED  = "\240\159\146\168",   -- rocket         (Speed section)
 }
 ```
 
 ### Adding a new emoji
 
-1. Find the emoji you want on [emojipedia.org](https://emojipedia.org)
-2. Get its Unicode code point (e.g. `U+1F525` for fire)
-3. Run this Python snippet to get the Lua escape string:
+1. Find the emoji on [emojipedia.org](https://emojipedia.org) and note its code point (e.g. `U+1F525` for fire)
+2. Run this snippet to get the Lua escape bytes:
 
 ```python
-cp = 0x1F525  # replace with your emoji's code point
+cp = 0x1F525  # your emoji's code point
 b  = chr(cp).encode("utf-8")
 print("".join(f"\\{x}" for x in b))
-# output: \240\159\148\165
+# prints: \240\159\148\165
 ```
 
-4. Add it to the `E` table:
+3. Add to `E` and use anywhere:
 
 ```lua
-FIRE = "\240\159\148\165",  -- fire emoji
-```
+E.FIRE = "\240\159\148\165"
 
-5. Use it anywhere in the script:
-
-```lua
-NewToggle(MovPage, E.FIRE .. " Rocket Boost", "Go very fast", function(v) end)
+-- example use in a toggle label:
+Tab:CreateToggle({ Name = E.FIRE .. " Fire Mode", ... })
 ```
 
 ---
 
-## 8. Movement Features
+## 8. Move Tab
 
-All movement features are in the **Move** tab (first tab, running emoji icon).
+Controls all movement and position features.
 
 ---
 
 ### Fly
 
-Lets your character fly freely using WASD + Space/Shift on PC, or the on-screen D-pad on mobile.
+Flies your character using `BodyVelocity` + `BodyGyro`. On PC uses WASD + Space/Shift. On mobile uses the D-pad overlay (see [Section 14](#14-mobile-d-pad)).
 
-**Toggle object:**
-```lua
-local flyTgl = NewToggle(MovPage, "Fly", "desc", function(v) SetFly(v) end)
-```
+When fly is turned off or your character respawns/dies, the D-pad hides automatically and all connections clean up.
 
-**Turn on from code:**
 ```lua
-flyTgl.Set(true)   -- turns fly on
-flyTgl.Set(false)  -- turns fly off
-```
+flyTgl:Set(true)    -- enable fly
+flyTgl:Set(false)   -- disable fly
+flyTgl:Get()        -- returns true / false
 
-**Check current state:**
-```lua
-if flyTgl.Get() then
-    print("Fly is ON")
-end
-```
+-- Change default fly speed (before runtime):
+State.FlySpeed = 80
 
-**Fly speed** is controlled by the `FlySpeed` slider (10–300). Change the default:
-```lua
--- In State table at the top:
-FlySpeed = 100,  -- default fly speed
+-- Change fly speed at runtime:
+-- use the Fly Speed slider in the UI, or:
+State.FlySpeed = 120
 ```
 
 **PC controls while flying:**
-- `W` / `S` — forward / backward
-- `A` / `D` — strafe left / right
-- `Space` — fly up
-- `LeftShift` — fly down
+
+| Key | Action |
+|-----|--------|
+| `W` / `S` | Forward / backward |
+| `A` / `D` | Strafe left / right |
+| `Space` | Fly upward |
+| `LeftShift` | Fly downward |
 
 ---
 
 ### Noclip
 
-Disables collision so you walk through walls and floors.
+Sets `CanCollide = false` on all character `BasePart`s every `Stepped` frame. Restores all collision when turned off.
 
 ```lua
-noclipTgl.Set(true)   -- enable
-noclipTgl.Set(false)  -- disable
+noclipTgl:Set(true)
+noclipTgl:Set(false)
 ```
-
-When disabled, all `CanCollide` properties are restored to `true`.
 
 ---
 
 ### Infinite Jump
 
-Lets you jump as many times as you want mid-air by intercepting `JumpRequest`.
+Intercepts `UserInputService.JumpRequest` and forces `Jumping` state on every press, mid-air or not.
 
 ```lua
-infJmpTgl.Set(true)
+infJumpTgl:Set(true)
 ```
 
 ---
 
 ### Sprint
 
-On PC: hold `LeftShift` while the Sprint toggle is ON to sprint at the Sprint Speed.
-On mobile: turning on Sprint just applies the Sprint Speed slider value directly.
+On PC: hold `LeftShift` while sprint is ON to sprint at `State.SprintSpeed`. On mobile: enabling sprint applies the speed immediately without needing a key hold.
 
 ```lua
-sprintTgl.Set(true)
--- change sprint speed:
-State.SprintSpeed = 80  -- or use the slider
-```
-
----
-
-### Anti-Gravity
-
-Sets `workspace.Gravity` to `10`. Restores original gravity when turned off.
-
-```lua
-antigravTgl.Set(true)
+sprintTgl:Set(true)
+State.SprintSpeed = 80  -- or use the Sprint Speed slider
 ```
 
 ---
 
 ### No Fall Damage
 
-Automatically heals to full HP whenever you land. Uses `Humanoid.StateChanged`.
+Listens for `Humanoid.StateChanged` → `Landed` and immediately resets `Health` to `MaxHealth`.
 
 ```lua
-noFallTgl.Set(true)
+noFallTgl:Set(true)
 ```
 
 ---
 
 ### Anti-Void
 
-Saves your last known safe position (Y > -100) every frame and teleports you back if you fall below Y = -100.
+Every frame saves your `HumanoidRootPart.CFrame` as long as `Y > -80`. If you fall below `Y = -80`, you are immediately teleported back to the last saved CFrame.
 
 ```lua
-antiVoidTgl.Set(true)
+antiVoidTgl:Set(true)
 ```
 
 ---
 
-### Click / Tap Teleport
+### Click Teleport
 
-**PC:** Click on any surface with your mouse and your character teleports there.
-**Mobile:** Tap any surface and you teleport there.
+**PC:** `Mouse.Button1Down` on any surface teleports you there (3 studs above hit position).  
+**Mobile:** `TouchTap` on any surface teleports you there.
 
 ```lua
-tpTgl.Set(true)
+tpTgl:Set(true)
 ```
 
 ---
 
-### Save Position & Go To Saved
+### Save Position / Go To Saved
 
-Saves your current `CFrame` and lets you teleport back to it.
+Saves your current `CFrame` to `State.SavedCFrame` and teleports back on demand.
 
 ```lua
--- These are buttons in the UI, but you can also set from code:
-State.SavedCFrame = GetHRP().CFrame  -- save
-GetHRP().CFrame   = State.SavedCFrame  -- restore
+-- From code:
+State.SavedCFrame = GetHRP().CFrame   -- save
+GetHRP().CFrame   = State.SavedCFrame -- restore
 ```
 
 ---
 
-### Loop TP
-
-When enabled, teleports you to your Saved Position every frame, effectively **freezing you in place** at that position. Useful for staying in one spot while other things happen.
+### Speed & Jump Sliders
 
 ```lua
--- First save a position, then:
-loopTpTgl.Set(true)
+speedSld:Set(100)   -- set walk speed value (also enable Speed Boost toggle)
+jumpSld:Set(200)    -- set jump power — applies immediately to Humanoid
+
+speedSld:Get()      -- read current slider value
+jumpSld:Get()
 ```
 
 ---
 
-### Walk Speed / Jump Power / Fly Speed / Sprint Speed sliders
+### Reset Movement
 
-All sliders return an object with `Set()` and `Get()`:
-
-```lua
-speedSld.Set(100)      -- set walk speed to 100
-jumpSld.Set(300)       -- set jump power to 300
-flySpSld.Set(150)      -- set fly speed to 150
-sprintSld.Set(80)      -- set sprint speed to 80
-
-print(speedSld.Get())  -- read current walk speed value
-```
+Turns off Fly, Noclip, Infinite Jump, Sprint, and Speed Boost. Restores `WalkSpeed = 16` and `JumpPower = 50`. Also hides the fly pad correctly.
 
 ---
 
-## 9. Player Features
+## 9. Player Tab
 
-All in the **Player** tab (person emoji icon).
+Controls your character's health, appearance, and physics.
 
 ---
 
 ### God Mode
 
-Sets `MaxHealth` and `Health` to `math.huge` every frame via Heartbeat.
+Sets `Humanoid.MaxHealth` and `Health` to `math.huge` every `Heartbeat`. When disabled, resets both to `100`.
 
 ```lua
-godTgl.Set(true)    -- enable
-godTgl.Set(false)   -- disable (resets max health to 100)
+godTgl:Set(true)
+godTgl:Set(false)
 ```
 
 ---
 
 ### Auto Heal
 
-Monitors HP every frame. When `Health / MaxHealth * 100` drops below the **Heal Threshold** slider value, it heals to full.
+Monitors `Health / MaxHealth * 100` every `Heartbeat`. When it drops below `State.AutoHealPct`, heals to full. Does nothing if God Mode is active.
 
 ```lua
-autoHealTgl.Set(true)
-
--- Change heal threshold from code:
-State.AutoHealPct = 50  -- heal when below 50%
--- or use the slider:
-healSld.Set(50)
+autoHealTgl:Set(true)
+healSld:Set(50)       -- heal when below 50%
+State.AutoHealPct = 50
 ```
+
+---
+
+### Full Heal (button)
+
+Instantly sets `Health = MaxHealth` once. No toggle, fires immediately on click.
 
 ---
 
 ### ESP Highlights
 
-Adds a red `Highlight` instance above every other player's character that shows through walls.
+Adds a `Highlight` instance to every other player's character with `DepthMode = AlwaysOnTop`. Works through walls. Also auto-applies to players who join after ESP is turned on.
 
 ```lua
-espTgl.Set(true)
+espTgl:Set(true)
+
+-- Change highlight colour with the colour picker in the UI,
+-- or from code (re-applies to all current highlights):
+State.ESPColor = Color3.fromRGB(0, 200, 255)
 ```
 
 ---
 
 ### Invisible
 
-Sets `Transparency = 1` on all `BasePart`s in your character. Restores original values when turned off.
+Sets `Transparency = 1` on all your `BasePart`s. Stores original values and restores them when turned off.
 
 ```lua
-invisTgl.Set(true)   -- go invisible
-invisTgl.Set(false)  -- become visible again
-```
-
----
-
-### Ghost Mode
-
-Enables both **Invisible** and **Noclip** at the same time.
-
-```lua
-ghostTgl.Set(true)
-```
-
----
-
-### Ragdoll
-
-Changes your Humanoid state to `Physics`, causing a ragdoll effect.
-
-```lua
-ragdollTgl.Set(true)   -- ragdoll
-ragdollTgl.Set(false)  -- get back up
+invisTgl:Set(true)
+invisTgl:Set(false)   -- restores original transparency
 ```
 
 ---
 
 ### Spin
 
-Rotates your `HumanoidRootPart` around the Y axis every Heartbeat at the speed set by the Spin Speed slider.
+Rotates `HumanoidRootPart` on Y axis every `Heartbeat` at `State.SpinSpeed` radians/second.
 
 ```lua
-spinTgl.Set(true)
+spinTgl:Set(true)
+State.SpinSpeed = 10   -- or use the Spin Speed slider
+```
 
--- Change spin speed from code:
-State.SpinSpeed = 10  -- fast
--- or use the slider:
-spinSld.Set(10)
+---
+
+### Ragdoll
+
+Changes `Humanoid` state to `Physics`. Turning off changes state to `GettingUp`.
+
+```lua
+ragdollTgl:Set(true)
+ragdollTgl:Set(false)
 ```
 
 ---
 
 ### Animation Speed
 
-Adjusts the speed of all currently playing animation tracks via `AdjustSpeed()`.
+Calls `AdjustSpeed()` on all currently playing `AnimationTrack`s.
 
 ```lua
-animSld.Set(2)   -- 2x speed
-animSld.Set(0.5) -- half speed
-animSld.Set(0)   -- freeze all animations
-animSld.Set(1)   -- back to normal
+animSld:Set(2)    -- double speed
+animSld:Set(0)    -- freeze all animations
+animSld:Set(1)    -- normal speed
 ```
 
 ---
 
-### Head Size / Body Scale
+### Head Size / Body Scale / Remove Accessories / Reset Character
 
-```lua
--- These are sliders, no toggle object returned.
--- Control them via State or just use the slider UI.
--- Head Size: 0.5x to 5x
--- Body Scale: 0.5x to 3x (affects all NumberValue Scale children of Humanoid)
-```
+All accessed through the UI. Reset Character first disables Fly (hiding the D-pad) then calls `LocalPlayer:LoadCharacter()`.
 
 ---
 
-## 10. World Features
+## 10. World Tab
 
-All in the **World** tab (earth emoji icon).
+Controls lighting, fog, gravity, and time.
 
 ---
 
 ### Time of Day
 
-Sets `Lighting.ClockTime`. Range 0–24 hours.
+Sets `Lighting.ClockTime` to a value between 0 and 24.
 
 ```lua
-timeSld.Set(18)  -- golden hour
-timeSld.Set(2)   -- night
-timeSld.Set(12)  -- noon
+timeSld:Set(18)   -- golden hour
+timeSld:Set(2)    -- night
+timeSld:Set(12)   -- noon
 ```
 
 ---
 
 ### Lock Sun
 
-Freezes `Lighting.ClockTime` at its current value every Heartbeat. Turn it on after dragging the time slider to the exact position you want.
+Freezes `Lighting.ClockTime` at whatever value it currently is, every `Heartbeat`. Set your time first, then enable Lock Sun.
 
 ```lua
-lockSunTgl.Set(true)   -- freeze time at current value
-lockSunTgl.Set(false)  -- unfreeze
+lockSunTgl:Set(true)    -- freeze at current time
+lockSunTgl:Set(false)   -- allow time to change again
 ```
 
 ---
 
 ### Fullbright
 
-Sets `Lighting.Brightness = 10` and `Ambient = white`. Restores saved values when turned off.
+Sets `Brightness = 10`, `Ambient` and `OutdoorAmbient` to white. Saves and restores originals when turned off.
 
 ```lua
-brightTgl.Set(true)
+brightTgl:Set(true)
+brightTgl:Set(false)  -- restores saved values
 ```
 
 ---
 
 ### Remove Fog
 
-Sets `FogEnd` and `FogStart` to `900,000,000` (effectively no fog).
-
-```lua
-removeFogTgl.Set(true)
-```
+Pushes `FogEnd` and `FogStart` to `9×10⁸` (effectively invisible). Restores defaults when turned off.
 
 ---
 
 ### Rainbow Ambient
 
-Cycles `Lighting.Ambient` and `Lighting.OutdoorAmbient` through HSV colors on Heartbeat. To stop it and get normal ambient back, toggle it off.
+Cycles `Lighting.Ambient` and `OutdoorAmbient` through HSV on every `Heartbeat`. Turning off restores them to `(127,127,127)`.
 
 ---
 
-### Gravity Slider
+### Gravity
 
-Sets `workspace.Gravity`. Range 5–500. Default is `196` (Roblox default).
+Sets `workspace.Gravity`. Range 5–500. Anti-Gravity toggle sets it to `10`. Reset Gravity button restores the original value from when the script loaded.
 
 ---
 
-### Lighting Presets (buttons)
+### Lighting Presets
 
-| Button | What it does |
+| Preset | What changes |
 |--------|-------------|
-| Golden Hour | ClockTime = 18, Brightness = 1.5 |
-| Dark Night | ClockTime = 2, Brightness = 0.4 |
-| Foggy Storm | ClockTime = 10, Brightness = 0.3, FogEnd = 400 |
-| Clear Day (Reset) | Resets everything back to defaults |
+| Default | Resets ClockTime, Brightness, Fog, Ambient to originals |
+| Golden Hour | ClockTime = 18, Brightness = 1.5, warm amber ambient |
+| Dark Night | ClockTime = 2, Brightness = 0.3, dark blue ambient |
+| Foggy Storm | ClockTime = 10, Brightness = 0.3, FogEnd = 300 |
+| Blood Red | ClockTime = 12, red ambient and outdoor ambient |
 
 ---
 
 ## 11. Players Tab
 
-The **Players** tab (two people emoji icon) lets you select another player from a dropdown and perform actions on them.
+Lets you pick another player from a dropdown and act on them.
 
 ---
 
 ### Selecting a Player
 
-Tap the dropdown header to open it. It shows all players currently in the server except yourself. Pick one name from the list — this becomes the **selected player** for all action buttons.
+Click the dropdown to open a list of all players except yourself. Click a name to select them. That player becomes the target for all action buttons.
 
 ```lua
--- The dropdown object:
-local playerDrop = NewDropdown(PlsPage, "Select Player", GetPlayerNames, function(name) end)
-
--- Read who is selected from code:
-local name = playerDrop.GetSelected()
-
--- Set selected from code:
-playerDrop.Set("PlayerName")
+playerDrop:Get()            -- returns the currently selected name (string)
+playerDrop:Set("PlayerName") -- select a player by name programmatically
+playerDrop:Refresh(GetPlayerNames()) -- rebuild the list after someone joins/leaves
 ```
 
 ---
 
 ### Teleport To Player
 
-Teleports your character to stand 3 studs away from the selected player.
+Teleports your `HumanoidRootPart` 3 studs beside the selected player's `HumanoidRootPart`.
 
 ---
 
 ### Spectate Player
 
-Switches camera to `Scriptable` mode and follows the selected player from behind. Disable the toggle to get your camera control back.
+Switches `Camera.CameraType` to `Scriptable` and uses `RenderStepped` to follow the selected player from behind at `CFrame.new(0, 4, -10)`. Turning off restores `CameraType = Custom`.
 
 ```lua
-spectateTgl.Set(true)   -- start spectating selected player
-spectateTgl.Set(false)  -- stop spectating
+specTgl:Set(true)    -- start spectating the selected player
+specTgl:Set(false)   -- stop, camera returns to normal
 ```
 
-> **Important:** Spectate changes your camera type. If the camera feels stuck after disabling, also try clicking anywhere in-game.
+> If your camera feels stuck after stopping spectate, click anywhere in the game viewport.
 
 ---
 
-### Copy Player Position
+### Copy Their Position
 
-Copies the selected player's `CFrame` into `State.SavedCFrame`. Then use **Go To Saved** or **Loop TP** to use it.
+Saves the selected player's `HumanoidRootPart.CFrame` into `State.SavedCFrame`. Then use Go To Saved or Loop TP to use it.
 
 ---
 
-## 12. Misc Features
+### Refresh Info
 
-In the **Misc** tab (gear emoji icon).
+Reads the selected player's current `Health`, `MaxHealth`, and position, and displays it in the info label.
+
+---
+
+## 12. Misc Tab
 
 ---
 
 ### Anti-AFK
 
-Fires a jump every 4.5 minutes (270 seconds) to prevent the Roblox AFK kick. Uses `Heartbeat` accumulation.
-
-```lua
--- Toggle is in the UI. No API needed.
--- Internally:
-State.AntiAFKOn = true
-```
+Accumulates `Heartbeat` delta time. Every 270 seconds (4.5 minutes) it fires `Humanoid.Jump = true` to reset the Roblox AFK timer.
 
 ---
 
 ### Hide HUD
 
-Calls `StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)` to hide the Roblox health bar, backpack, chat, etc.
+Calls `StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)` to hide the Roblox health bar, backpack, leaderboard, and chat. Toggle off to show them again.
 
 ---
 
-### FPS Counter
+### Chat Commands
 
-Shows `FPS: XX` in the top-right corner of the screen. Updates every 1 second by counting Heartbeat frames.
+Requires the **Enable Chat Commands** toggle to be ON. Hooks into `LocalPlayer.Chatted` and parses messages. See [Section 13](#13-chat-commands) for the full command list.
 
 ---
 
-### Position HUD
+### Set Exact Walk Speed (TextBox)
 
-Shows `X: Y: Z:` coordinates in the top-right corner, updated every frame from `HumanoidRootPart.Position`.
+Type any number and press Enter to apply it directly to `Humanoid.WalkSpeed`. Accepts only numeric input.
 
 ---
 
 ## 13. Chat Commands
 
-Chat commands require the **Enable Chat Commands** toggle to be ON (in Misc tab). Type commands in the Roblox chat box while in the game.
+Enable the **Enable Chat Commands** toggle in the Misc tab first. Then type any of these in the Roblox chat.
 
 | Command | What it does | Example |
 |---------|-------------|---------|
-| `/speed [n]` | Sets your walk speed | `/speed 100` |
+| `/help` | Shows command list as a notification | `/help` |
 | `/fly` | Toggles fly on/off | `/fly` |
 | `/noclip` | Toggles noclip on/off | `/noclip` |
 | `/god` | Toggles god mode on/off | `/god` |
 | `/heal` | Full heals you instantly | `/heal` |
-| `/invis` | Toggles invisible | `/invis` |
-| `/ghost` | Toggles ghost mode (invis + noclip) | `/ghost` |
-| `/spin` | Toggles spin | `/spin` |
-| `/bright` | Toggles fullbright | `/bright` |
-| `/fog` | Toggles remove fog | `/fog` |
-| `/gravity [n]` | Sets workspace gravity | `/gravity 50` |
-| `/time [0-24]` | Sets time of day | `/time 18` |
-| `/tp [name]` | Teleports you to a player | `/tp PlayerName` |
-| `/reset` | Respawns your character | `/reset` |
+| `/invis` | Toggles invisible on/off | `/invis` |
+| `/spin` | Toggles spin on/off | `/spin` |
+| `/bright` | Toggles fullbright on/off | `/bright` |
+| `/speed [n]` | Sets walk speed to n | `/speed 100` |
+| `/gravity [n]` | Sets workspace gravity to n | `/gravity 50` |
+| `/time [0–24]` | Sets time of day | `/time 18` |
+| `/reset` | Stops fly (hides D-pad) then respawns | `/reset` |
 
-### Adding your own chat command
+### Adding your own command
 
-Find `ParseCommands()` in the script and add a new `elseif` block:
+Find the `LocalPlayer.Chatted` block and add an `elseif` inside it:
 
 ```lua
 elseif cmd == "/bighead" then
-    local char = GetChar()
-    if char and char:FindFirstChild("Head") then
-        char.Head.Size = Vector3.new(5, 5, 5)
+    local c = GetChar()
+    if c and c:FindFirstChild("Head") then
+        c.Head.Size = Vector3.new(6, 6, 6)
     end
 
 elseif cmd == "/normalhead" then
-    local char = GetChar()
-    if char and char:FindFirstChild("Head") then
-        char.Head.Size = Vector3.new(2, 1, 1)  -- default Roblox head
+    local c = GetChar()
+    if c and c:FindFirstChild("Head") then
+        c.Head.Size = Vector3.new(2, 1, 1)
     end
 
 elseif cmd == "/kill" then
     local hum = GetHum()
     if hum then hum.Health = 0 end
 
-elseif cmd == "/jump" then
-    local hum = GetHum()
-    if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
+elseif cmd == "/tp" and parts[2] then
+    local target = Players:FindFirstChild(parts[2])
+    if target and target.Character then
+        local hrp2 = target.Character:FindFirstChild("HumanoidRootPart")
+        local hrp  = GetHRP()
+        if hrp and hrp2 then hrp.CFrame = hrp2.CFrame + Vector3.new(3,0,0) end
+    end
 ```
 
 ---
 
-## 14. HUD — FPS & Position Display
+## 14. Mobile D-Pad
 
-The HUD is a separate `ScreenGui` named `KaolinHud` that is always visible (independent of the main hub window). It shows small labels in the top-right corner.
+When **Fly** is toggled ON on a mobile device, a transparent D-pad overlay appears in the bottom-left corner of the screen. It disappears automatically when fly is turned off, when the character resets, or when the character dies.
 
-**FPS Counter** — shows actual frames per second counted over 1-second windows via `RunService.Heartbeat`.
+### Button layout
 
-**Position HUD** — shows your character's `HumanoidRootPart.Position` as `X: Y: Z:` rounded to the nearest stud, updated every frame.
-
-Both are **off by default** and toggled from the Misc tab. You can also control them from code:
-
-```lua
-FpsLabel.Visible = true   -- show FPS
-PosLabel.Visible = true   -- show position
-FpsLabel.Visible = false  -- hide FPS
-PosLabel.Visible = false  -- hide position
+```
+        [ ^ FWD ]
+  [ < LFT ] [ v BCK ] [ > RGT ]
+  [    UP    ]  [    DN    ]
 ```
 
-### Changing HUD colors
+| Button | FlyDir flag set | What it does |
+|--------|----------------|-------------|
+| `^` | `Forward` | Move in camera's forward direction |
+| `v` | `Backward` | Move in camera's backward direction |
+| `<` | `Left` | Strafe left |
+| `>` | `Right` | Strafe right |
+| `UP` | `Up` | Rise vertically |
+| `DN` | `Down` | Descend vertically |
 
-Find `FpsLabel` and `PosLabel` in the script:
+Buttons are pressed and held — moving starts the moment you touch and stops the moment you release.
+
+### Repositioning the D-pad
+
+Find the `Pad.Position` line in the D-pad section of the script:
 
 ```lua
-FpsLabel.TextColor3 = Color3.fromRGB(200, 160, 80)   -- FPS label color (default gold)
-PosLabel.TextColor3 = Color3.fromRGB(160, 200, 160)  -- Position label color (default green)
+Pad.Position = UDim2.new(0, 10, 1, -174)
+--                        ^ 10px from left, 174px from bottom
+```
+
+Change the offsets to move it anywhere on screen. For example, bottom-right:
+
+```lua
+Pad.Position = UDim2.new(1, -220, 1, -174)
+```
+
+### Resizing the D-pad
+
+```lua
+Pad.Size = UDim2.new(0, 210, 0, 162)
+-- change 210 (width) and 162 (height)
 ```
 
 ---
 
 ## 15. PC Keybinds
 
-These keybinds work on PC only and are ignored silently on mobile.
+These fire via `KaolinLib:BindKey()` and are silently ignored on mobile.
 
 | Key | Action |
 |-----|--------|
-| `H` | Show / Hide the hub window |
+| `H` | Show / hide the hub window |
 | `F` | Toggle Fly |
 | `N` | Toggle Noclip |
 | `G` | Toggle God Mode |
@@ -1134,473 +939,500 @@ These keybinds work on PC only and are ignored silently on mobile.
 
 ### Adding a custom keybind
 
-Find the `UserInputService.InputBegan` block near the bottom of the script and add a new `if` line:
+Use `KaolinLib:BindKey()` at the bottom of the script alongside the existing ones:
 
 ```lua
--- Existing keybinds:
-if inp.KeyCode == Enum.KeyCode.H then ... end
-if inp.KeyCode == Enum.KeyCode.F then flyTgl.Set(not flyTgl.Get()) end
+-- Toggle spin with T
+KaolinLib:BindKey(Enum.KeyCode.T, function()
+    spinTgl:Set(not spinTgl:Get())
+end)
 
--- Add yours:
-if inp.KeyCode == Enum.KeyCode.T then
-    spinTgl.Set(not spinTgl.Get())   -- T to toggle spin
-end
-if inp.KeyCode == Enum.KeyCode.R then
-    LocalPlayer:LoadCharacter()       -- R to respawn
-end
-if inp.KeyCode == Enum.KeyCode.X then
-    antigravTgl.Set(not antigravTgl.Get())  -- X to toggle anti-gravity
-end
+-- Toggle anti-gravity with X
+KaolinLib:BindKey(Enum.KeyCode.X, function()
+    -- find the antigrav toggle object and use :Set()
+    antiGravTgl:Set(not antiGravTgl:Get())
+end)
+
+-- Instant heal with J
+KaolinLib:BindKey(Enum.KeyCode.J, function()
+    local hum = GetHum()
+    if hum then hum.Health = hum.MaxHealth end
+end)
 ```
 
 ---
 
-## 16. Mobile D-Pad
+## 16. State Table Reference
 
-When **Fly** is turned on while on mobile, a semi-transparent D-pad appears in the bottom-left corner of the screen.
-
-| Button | Direction |
-|--------|-----------|
-| UP arrow | Move forward |
-| DOWN arrow | Move backward |
-| LEFT arrow | Strafe left |
-| RIGHT arrow | Strafe right |
-| RISE (up triangle) | Fly upward |
-| FALL (down triangle) | Fly downward |
-
-The D-pad is automatically shown when fly is enabled and hidden when fly is disabled. You can reposition it by changing:
+The `State` table holds the current value of every feature. Read from it anywhere in the script.
 
 ```lua
-FlyPad.Position = UDim2.new(0, 10, 1, -180)
--- UDim2.new(xScale, xOffset, yScale, yOffset)
--- Default: bottom-left, 10px from left, 180px from bottom
+print(State.FlyEnabled)    -- true / false
+print(State.FlySpeed)      -- number
+print(State.SavedCFrame)   -- CFrame or nil
 ```
-
-### Changing D-pad size
-
-```lua
-FlyPad.Size = UDim2.new(0, 216, 0, 168)
--- Change 216 (width) and 168 (height) to resize
-```
-
----
-
-## 17. State Table — Reading Feature Status
-
-The `State` table stores the current on/off status and value of every feature. You can read from it anywhere in the script.
-
-```lua
--- Check if a feature is currently on:
-if State.FlyEnabled then
-    print("Flying right now")
-end
-
-if State.GodModeEnabled then
-    print("God mode is active")
-end
-
--- Read current values:
-print("Walk speed:", State.WalkSpeed)
-print("Fly speed:",  State.FlySpeed)
-print("Jump power:", State.JumpPower)
-
--- Check saved position:
-if State.SavedCFrame then
-    print("Saved position exists:", State.SavedCFrame.Position)
-end
-```
-
-### Full State table reference
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `FlyEnabled` | bool | false | Is fly currently on |
-| `FlySpeed` | number | 60 | Current fly speed |
-| `NoclipEnabled` | bool | false | Is noclip on |
-| `InfJumpEnabled` | bool | false | Is infinite jump on |
-| `SprintEnabled` | bool | false | Is sprint on |
-| `SprintSpeed` | number | 50 | Sprint speed value |
-| `NoFallDmg` | bool | false | Is no fall damage on |
-| `AntiVoidEnabled` | bool | false | Is anti-void on |
-| `AntiGravEnabled` | bool | false | Is anti-gravity on |
-| `SpeedEnabled` | bool | false | Is speed boost on |
+| `FlyEnabled` | bool | false | Is fly active |
+| `FlySpeed` | number | 60 | Fly speed (studs/s) |
 | `WalkSpeed` | number | 50 | Walk speed slider value |
-| `JumpPower` | number | 100 | Jump power slider value |
-| `LoopTPEnabled` | bool | false | Is loop teleport on |
-| `SavedCFrame` | CFrame/nil | nil | Saved position CFrame |
-| `GodModeEnabled` | bool | false | Is god mode on |
-| `AutoHealEnabled` | bool | false | Is auto heal on |
-| `AutoHealPct` | number | 30 | Auto heal threshold % |
-| `InvisEnabled` | bool | false | Is invisible on |
-| `GhostEnabled` | bool | false | Is ghost mode on |
-| `RagdollEnabled` | bool | false | Is ragdoll on |
-| `SpinEnabled` | bool | false | Is spin on |
-| `SpinSpeed` | number | 3 | Spin speed multiplier |
+| `SprintSpeed` | number | 60 | Sprint speed value |
+| `JumpPower` | number | 100 | Jump power value |
+| `SpinSpeed` | number | 5 | Spin speed (rad/s) |
+| `AutoHealPct` | number | 30 | Auto-heal threshold (%) |
+| `SavedCFrame` | CFrame/nil | nil | Saved position |
+| `ESPColor` | Color3 | red | ESP highlight fill colour |
+| `FlyEnabled` | bool | false | Is fly on |
+| `SpeedEnabled` | bool | false | Is speed boost on |
+| `GodEnabled` | bool | false | Is god mode on |
 | `ESPEnabled` | bool | false | Is ESP on |
-| `AnimSpeed` | number | 1 | Animation speed multiplier |
-| `FullbrightOn` | bool | false | Is fullbright on |
-| `RemoveFogOn` | bool | false | Is remove fog on |
-| `LockSunOn` | bool | false | Is lock sun on |
-| `LockedTime` | number | 14 | Time locked at |
-| `AntiAFKOn` | bool | false | Is anti-AFK on |
-| `ChatCmdsOn` | bool | false | Are chat commands on |
-| `FpsDisplayOn` | bool | false | Is FPS counter visible |
-| `PosDisplayOn` | bool | false | Is position HUD visible |
 
 ---
 
-## 18. Feature Functions — API Reference
+## 17. Feature Functions API
 
-These are the internal functions that control each feature. You can call them directly from your own code added to the script.
+These are the internal functions that power each feature. Call them directly if you want to trigger a feature from your own added code. Always call the matching toggle's `:Set()` too so the UI stays in sync.
 
 ```lua
-SetFly(true/false)            -- toggle fly
-SetNoclip(true/false)         -- toggle noclip
-SetInfJump(true/false)        -- toggle infinite jump
-SetSprint(true/false)         -- toggle sprint
-SetNoFallDmg(true/false)      -- toggle no fall damage
-SetAntiVoid(true/false)       -- toggle anti-void
-SetAntiGrav(true/false)       -- toggle anti-gravity
-SetGodMode(true/false)        -- toggle god mode
-SetAutoHeal(true/false)       -- toggle auto heal
-SetInvisible(true/false)      -- toggle invisible
-SetGhostMode(true/false)      -- toggle ghost (invis + noclip)
-SetRagdoll(true/false)        -- toggle ragdoll
-SetSpin(true/false)           -- toggle spin
-SetESP(true/false)            -- toggle ESP
-SetTeleport(true/false)       -- toggle click/tap teleport
-SetLoopTP(true/false)         -- toggle loop teleport
-SetFullbright(true/false)     -- toggle fullbright
-SetRemoveFog(true/false)      -- toggle remove fog
-SetLockSun(true/false)        -- toggle lock sun
-SetAntiAFK(true/false)        -- toggle anti-afk
-SetSpectate(true/false, player)  -- toggle spectate (pass player object or nil)
-ApplyAnimSpeed(number)        -- apply animation speed (0 = freeze, 1 = normal, 2 = double)
+-- Movement
+SetFly(true/false)          -- also shows/hides the D-pad
+SetNoclip(true/false)
+SetInfJump(true/false)
+SetSprint(true/false)
+SetNoFallDmg(true/false)
+SetAntiVoid(true/false)
+SetTeleport(true/false)     -- click/tap to teleport
+SetLoopTP(true/false)       -- freeze at saved position
+
+-- Player
+SetGodMode(true/false)
+SetAutoHeal(true/false)
+SetInvisible(true/false)
+SetSpin(true/false)
+SetRagdoll(true/false)
+SetESP(true/false)
+SetSpectate(true/false, playerObject)
+
+-- World
+SetFullbright(true/false)
+SetRemoveFog(true/false)
+SetLockSun(true/false)
+SetAntiAFK(true/false)
 ```
 
-### Example — turn on several features at once
+### Example — enable multiple features at once
 
 ```lua
--- After the script loads, auto-enable these features:
+-- Auto-enable god mode + anti-void + anti-AFK on load
 task.delay(1, function()
-    SetGodMode(true)
-    SetAntiVoid(true)
-    SetAntiAFK(true)
-    godTgl.Set(true)       -- also update the toggle UI
-    antiVoidTgl.Set(true)
+    SetGodMode(true)    godTgl:Set(true)
+    SetAntiVoid(true)   antiVoidTgl:Set(true)
+    SetAntiAFK(true)    -- Misc tab toggle (find the toggle object reference)
 end)
 ```
 
-> **Note:** Always call both the function AND the toggle's `Set()` so the visual toggle stays in sync. For example, `SetGodMode(true)` turns it on internally but the toggle pill won't move unless you also call `godTgl.Set(true)`.
+> **Rule:** always pair each `SetXxx()` call with the matching `tgl:Set()` call so the visual toggle pill stays in sync with the actual state.
 
 ---
 
-## 19. Component Builders — API Reference
+## 18. KaolinLib Component API
 
-These functions create UI elements. Use them to add your own custom components to any tab page.
+KaolinHub v3.0 is built on top of **KaolinLib**. Here is the full API for every component the library provides.
 
 ---
 
-### NewPage()
-
-Creates a new scrollable content page. Assign it to a variable and pass it to `NewTabBtn`.
+### Window
 
 ```lua
-local MyPage = NewPage()
+local Window = KaolinLib:CreateWindow({
+    Title    = "MyHub",
+    SubTitle = "v1.0  |  by me",
+    Theme    = {
+        -- any DefaultTheme keys to override, e.g.:
+        Accent = Color3.fromRGB(100, 200, 100),
+    },
+})
 ```
 
 ---
 
-### NewTabBtn(icon, label, page, order)
-
-Creates a sidebar tab button that switches to the given page.
+### Notification
 
 ```lua
-local MyBtn = NewTabBtn(E.STAR, "Custom", MyPage, 6)
--- icon   = emoji from E table
--- label  = text shown under the icon
--- page   = the page returned from NewPage()
--- order  = position in the sidebar (1=top, higher=lower)
+Window:Notify({
+    Title    = "Hello",
+    Message  = "Something happened.",
+    Type     = "success",   -- "success" | "error" | "info"
+    Duration = 3,           -- seconds before it disappears
+})
 ```
 
 ---
 
-### NewSection(page, text)
-
-Adds a gold section header label.
+### Tab
 
 ```lua
-NewSection(MyPage, "MY SECTION")
+local Tab = Window:CreateTab("Tab Name", "ICON")
+-- icon can be any emoji string from the E table, e.g. E.RUN
 ```
 
 ---
 
-### NewSep(page)
-
-Adds a thin 1px horizontal divider line.
+### Section header
 
 ```lua
-NewSep(MyPage)
+Tab:CreateSection("SECTION NAME")
+-- renders a tinted label across the full width of the tab
 ```
 
 ---
 
-### NewLabel(page, text) → { Set(text) }
-
-Adds a read-only text label card. Returns an object with `Set()` to update the text.
+### Separator
 
 ```lua
-local myLbl = NewLabel(MyPage, "Current value: 0")
-
--- Update from code:
-myLbl.Set("Current value: " .. tostring(someNumber))
+Tab:CreateSeparator()
+-- renders a 1px horizontal line
 ```
 
 ---
 
-### NewToggle(page, label, desc, callback) → { Set(bool), Get() }
-
-Adds an animated toggle switch.
+### Label
 
 ```lua
-local myTgl = NewToggle(MyPage, "My Feature", "Short description", function(on)
-    if on then
-        print("turned ON")
+local lbl = Tab:CreateLabel("Initial text here.")
+
+-- Update text at any time:
+lbl:Set("New text.")
+```
+
+---
+
+### Toggle
+
+```lua
+local tgl = Tab:CreateToggle({
+    Name     = "My Feature",
+    Desc     = "Short description shown below the name",  -- optional
+    Default  = false,
+    Callback = function(value)  -- value is true or false
         -- your logic here
-    else
-        print("turned OFF")
-    end
-end)
-
--- Control from code:
-myTgl.Set(true)    -- turns on, fires callback
-myTgl.Set(false)   -- turns off, fires callback
-myTgl.Get()        -- returns true or false
-```
-
----
-
-### NewSlider(page, label, min, max, default, suffix, callback) → { Set(n), Get() }
-
-Adds a draggable slider.
-
-```lua
-local mySld = NewSlider(MyPage, "My Value", 0, 100, 50, "%", function(value)
-    print("Value is now:", value)
-    -- your logic here
-end)
-
--- Control from code:
-mySld.Set(75)    -- sets slider to 75, fires callback
-mySld.Get()      -- returns current number
-```
-
-**Note:** Values with a decimal range (e.g. 0.5 to 5) will show one decimal place automatically.
-
----
-
-### NewButton(page, label, desc, callback)
-
-Adds a clickable button. `desc` can be `nil` for a compact button.
-
-```lua
-NewButton(MyPage, "Do Something", "Short description of what it does", function()
-    print("Button clicked!")
-    -- your logic here
-end)
-
--- Compact button (no description):
-NewButton(MyPage, "Quick Action", nil, function()
-    -- your logic here
-end)
-```
-
----
-
-### NewDropdown(page, label, getOptionsFunction, callback) → { GetSelected(), Set(text), Refresh() }
-
-Adds an expandable dropdown list.
-
-```lua
-local myDrop = NewDropdown(MyPage, "Pick a value",
-    function()
-        -- This function is called every time the dropdown opens
-        -- Return a table of strings
-        return {"Option A", "Option B", "Option C"}
     end,
-    function(selected)
-        print("Player picked:", selected)
-    end
-)
+})
 
--- Read selected:
-local picked = myDrop.GetSelected()
-
--- Set selected:
-myDrop.Set("Option B")
-
--- Rebuild list (call after options change):
-myDrop.Refresh()
+tgl:Set(true)    -- turn on (fires callback)
+tgl:Set(false)   -- turn off (fires callback)
+tgl:Get()        -- returns current state (bool)
 ```
 
 ---
 
-## 20. Window Controls
+### Slider
 
-### Close button (✕)
+```lua
+local sld = Tab:CreateSlider({
+    Name     = "My Value",
+    Min      = 0,
+    Max      = 100,
+    Default  = 50,
+    Suffix   = "%",   -- appended after the number in the display
+    Callback = function(value)  -- value is a rounded integer
+        -- your logic here
+    end,
+})
 
-Hides the main window. Shows the floating brick restore button.
-
-### Minimise button (−)
-
-Collapses the window to just the title bar. Click again to restore. The icon switches to a star when minimised.
-
-### Restore button (🧱)
-
-Visible only when the window is closed. Click it to bring the hub back.
-
-### Dragging
-
-Grab the gold title bar and drag. Works with mouse on PC and finger touch on mobile.
-
-### PC toggle with H key
-
-Press `H` to show/hide the entire hub window.
+sld:Set(75)    -- set value (fires callback)
+sld:Get()      -- returns current number
+```
 
 ---
 
-## 21. Common Errors & Fixes
+### Button
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `HttpService is not enabled` | HTTP is off in Studio | Game Settings → Security → Allow HTTP Requests → ON |
-| Hub loads but no key screen appears | `ScreenGui.Enabled` set to `true` early | Make sure `ScreenGui.Enabled = false` is set before the Key GUI section |
-| Emojis show as `?` boxes | File encoding issue | Use the byte escape `E` table (already implemented) — do NOT paste raw emoji into the script |
-| Key screen won't go away after correct key | `KeyGui:Destroy()` not being reached | Check the `VerifyKey` function for Lua errors in the verify block |
-| Toggles don't visually match feature state | Calling `SetXxx()` without calling `toggle.Set()` | Always call both: `SetGodMode(true)` + `godTgl.Set(true)` |
-| Fly D-pad not appearing on mobile | `FlyPadFrame` reference issue | Make sure `FlyPadFrame = FlyPad` line exists after the FlyPad is created |
-| Spectate camera stuck | Camera type not restored | Toggle Spectate off — it sets `CameraType = Custom` which restores control |
-| Sprint not working on mobile | Sprint needs `LeftShift` on PC | On mobile, Sprint just directly applies sprint speed — no key hold needed |
-| Chat commands not working | Toggle is off | Go to Misc tab and turn on **Enable Chat Commands** |
-| `attempt to index nil with 'Set'` | Using toggle object before it's defined | Make sure you define the toggle before you call `.Set()` on it |
+```lua
+Tab:CreateButton({
+    Name     = "Click Me",
+    Desc     = "Optional description",   -- omit for compact button
+    Callback = function()
+        -- your logic here
+    end,
+})
+```
 
 ---
 
-## 22. Full Customised Example
+### TextBox
 
-A complete example showing how to add a **custom tab with custom features** to KaolinHub. Paste this block just before the `SELECT FIRST TAB` section.
+```lua
+local box = Tab:CreateTextBox({
+    Name         = "Enter Value",
+    Default      = "Type here...",
+    ClearOnFocus = true,
+    Numeric      = false,   -- true = only allows numbers
+    Callback     = function(value)  -- fires when Enter pressed or focus lost
+        -- value is a string
+    end,
+})
+
+box:Set("Hello")   -- set text programmatically
+box:Get()          -- returns current text string
+```
+
+---
+
+### Dropdown
+
+```lua
+local dd = Tab:CreateDropdown({
+    Name     = "Choose Option",
+    Options  = { "Alpha", "Beta", "Gamma" },
+    Default  = "Alpha",
+    Callback = function(selected)   -- selected is the chosen string
+        -- your logic here
+    end,
+})
+
+dd:Set("Beta")                -- select an option programmatically
+dd:Get()                      -- returns currently selected string
+dd:Refresh({ "X", "Y", "Z" }) -- replace the options list
+```
+
+---
+
+### Color Picker
+
+```lua
+local picker = Tab:CreateColorPicker({
+    Name     = "Pick a Colour",
+    Default  = Color3.fromRGB(255, 80, 80),
+    Callback = function(color)   -- color is a Color3
+        -- your logic here
+    end,
+})
+
+picker:Set(Color3.fromRGB(0, 255, 0))   -- set colour programmatically
+picker:Get()                             -- returns current Color3
+```
+
+---
+
+### Keybind helpers
+
+```lua
+-- Fire a function when a key is pressed (PC only, silent on mobile)
+KaolinLib:BindKey(Enum.KeyCode.T, function()
+    print("T was pressed")
+end)
+
+-- Toggle the hub window visibility with a key
+KaolinLib:BindToggleKey(Enum.KeyCode.H, Window)
+```
+
+---
+
+## 19. Window Controls
+
+| Control | How to use |
+|---------|-----------|
+| **Drag** | Click and drag the gold title bar. Works with mouse and touch. |
+| **Close (X)** | Hides the window. The floating brick button appears to restore it. |
+| **Minimise (−)** | Collapses to just the title bar. Click again to expand. |
+| **Restore (brick button)** | Only visible when window is closed. Click to reopen. |
+| **H key** | Toggles window visibility on PC. |
+
+---
+
+## 20. Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| `HttpService is not enabled` | HTTP off in Studio | Game Settings → Security → Allow HTTP Requests → ON |
+| Emojis show as `?` squares | Raw emoji in source | Use the `E` table byte escapes — never paste raw emoji into Lua |
+| Key screen appears but Verify does nothing | Lua error inside `VerifyKey` | Open the Developer Console (F9) and check for errors |
+| Fly pad doesn't appear on mobile | Not on mobile, or `HubGui` not found at build time | Confirm `IsMobile` is true; check the D-pad section runs after `CreateWindow` |
+| Fly pad stays visible after turning fly off | Old code path | Use v3.0 — `SetFly` now always sets `FlyPadFrame.Visible` |
+| Fly pad stays after character reset | Old code path | v3.0 has a `CharacterRemoving` listener that hides it automatically |
+| Toggle pill doesn't match feature state | Calling `SetXxx()` without `:Set()` | Always call both: `SetGodMode(true)` and `godTgl:Set(true)` |
+| Spectate camera stuck after disabling | `CameraType` not restored | Toggle Spectate off — it sets `CameraType = Custom`. Click in the viewport if still stuck. |
+| Chat commands not working | Toggle is OFF | Enable **Enable Chat Commands** in the Misc tab first |
+| Sprint not working on mobile | Needs `LeftShift` on PC | On mobile, sprint applies immediately when toggled — no key hold needed |
+| `attempt to index nil with 'Set'` | Toggle object used before being defined | Move the `:Set()` call to after the toggle is created |
+
+---
+
+## 21. Custom Tab Example
+
+A complete working example of a custom tab using every KaolinLib component. Paste this block **after** `Window:CreateTab` calls but **before** the PC Keybinds section.
 
 ```lua
 -- ============================================================
 --  CUSTOM TAB EXAMPLE
 -- ============================================================
-local CustomPage = NewPage()
-local CustomBtn  = NewTabBtn(E.STAR, "Custom", CustomPage, 6)
+local MyTab = Window:CreateTab("Custom", E.STAR)
 
--- Section header
-NewSection(CustomPage, "MY CUSTOM FEATURES")
+MyTab:CreateSection("STATUS")
 
--- A live status label
-local statusLbl = NewLabel(CustomPage, "Status: Idle")
+local statusLbl = MyTab:CreateLabel("Status: Idle")
 
--- Custom toggle that updates the label
-NewToggle(CustomPage, "Speed Hack x10", "Sets walk speed to 160", function(on)
-    local hum = GetHum()
-    if hum then
-        hum.WalkSpeed = on and 160 or 16
-    end
-    statusLbl.Set(on and "Status: SPEED HACK ACTIVE" or "Status: Idle")
-end)
+MyTab:CreateSection("FEATURES")
 
--- Custom toggle that enables both fly and god mode
-NewToggle(CustomPage, "God Fly Mode", "Fly + infinite health together", function(on)
-    flyTgl.Set(on)
-    godTgl.Set(on)
-    SetFly(on)
-    SetGodMode(on)
-end)
+MyTab:CreateToggle({
+    Name     = "Speed x10",
+    Desc     = "Sets walk speed to 160",
+    Default  = false,
+    Callback = function(on)
+        local hum = GetHum()
+        if hum then hum.WalkSpeed = on and 160 or 16 end
+        statusLbl:Set(on and "Status: SPEED ACTIVE" or "Status: Idle")
+    end,
+})
 
--- Custom slider that controls head size AND spin speed together
-NewSlider(CustomPage, "Chaos Level", 1, 10, 1, "", function(v)
-    State.SpinSpeed = v * 2
-    local char = GetChar()
-    if char and char:FindFirstChild("Head") then
-        char.Head.Size = Vector3.new(v * 0.5, v * 0.5, v * 0.5)
-    end
-end)
+MyTab:CreateToggle({
+    Name     = "God Fly",
+    Desc     = "Fly + infinite health at once",
+    Default  = false,
+    Callback = function(on)
+        flyTgl:Set(on)
+        godTgl:Set(on)
+    end,
+})
 
-NewSep(CustomPage)
-NewSection(CustomPage, "QUICK ACTIONS")
-
-NewButton(CustomPage, E.SAVE .. "  Save + Anti-Void", "Save position and enable anti-void", function()
-    local hrp = GetHRP()
-    if hrp then
-        State.SavedCFrame = hrp.CFrame
-        antiVoidTgl.Set(true)
-    end
-end)
-
-NewButton(CustomPage, E.SPIN .. "  Big Spin", "Giant head + max spin for 5 seconds", function()
-    local char = GetChar()
-    if char and char:FindFirstChild("Head") then
-        char.Head.Size = Vector3.new(8, 8, 8)
-    end
-    State.SpinSpeed = 20
-    spinTgl.Set(true)
-    task.delay(5, function()
-        spinTgl.Set(false)
-        if char and char:FindFirstChild("Head") then
-            char.Head.Size = Vector3.new(2, 1, 1)
+MyTab:CreateSlider({
+    Name     = "Chaos Level",
+    Min      = 1,
+    Max      = 10,
+    Default  = 1,
+    Suffix   = "x",
+    Callback = function(v)
+        State.SpinSpeed = v * 2
+        local c = GetChar()
+        if c and c:FindFirstChild("Head") then
+            c.Head.Size = Vector3.new(v * 0.6, v * 0.6, v * 0.6)
         end
-        State.SpinSpeed = 3
-    end)
-end)
+    end,
+})
 
-NewButton(CustomPage, "Full Reset", "Disables all features and resets everything", function()
-    -- Turn off all toggles
-    flyTgl.Set(false)        noclipTgl.Set(false)
-    godTgl.Set(false)        espTgl.Set(false)
-    invisTgl.Set(false)      ghostTgl.Set(false)
-    spinTgl.Set(false)       ragdollTgl.Set(false)
-    autoHealTgl.Set(false)   brightTgl.Set(true)
-    -- Reset world
-    workspace.Gravity        = OrigGravity
-    Lighting.ClockTime       = 14
-    Lighting.Brightness      = 1
-    Lighting.FogEnd          = 10000
-    -- Reset character
-    local hum = GetHum()
-    if hum then
-        hum.WalkSpeed = 16
-        hum.JumpPower = 50
-        hum.Health    = hum.MaxHealth
-    end
-    statusLbl.Set("Status: Reset complete!")
-end)
+MyTab:CreateColorPicker({
+    Name     = "ESP Colour",
+    Default  = Color3.fromRGB(255, 80, 80),
+    Callback = function(col)
+        State.ESPColor = col
+        if State.ESPEnabled then
+            for _, p in ipairs(Players:GetPlayers()) do RemoveESP(p) end
+            for _, p in ipairs(Players:GetPlayers()) do ApplyESP(p) end
+        end
+    end,
+})
 
-NewSep(CustomPage)
-NewSection(CustomPage, "PLAYER INFO")
+MyTab:CreateDropdown({
+    Name     = "Preset Speed",
+    Options  = { "Walk (16)", "Jog (32)", "Run (60)", "Blaze (150)" },
+    Default  = "Walk (16)",
+    Callback = function(v)
+        local speeds = { ["Walk (16)"]=16, ["Jog (32)"]=32, ["Run (60)"]=60, ["Blaze (150)"]=150 }
+        local hum = GetHum()
+        if hum and speeds[v] then hum.WalkSpeed = speeds[v] end
+    end,
+})
 
-local infoLbl = NewLabel(CustomPage, "Click Refresh to see info")
+MyTab:CreateSeparator()
+MyTab:CreateSection("QUICK ACTIONS")
 
-NewButton(CustomPage, "Refresh Info", nil, function()
-    local hrp = GetHRP()
-    local hum = GetHum()
-    if hrp and hum then
-        local p = hrp.Position
-        infoLbl.Set(string.format(
-            "HP: %.0f / %.0f\nSpeed: %.0f  |  Pos: %.0f, %.0f, %.0f",
-            hum.Health, hum.MaxHealth,
-            hum.WalkSpeed,
-            p.X, p.Y, p.Z
-        ))
-    else
-        infoLbl.Set("Character not found")
-    end
-end)
+MyTab:CreateButton({
+    Name     = "Save + Anti-Void",
+    Desc     = "Save position and enable anti-void together",
+    Callback = function()
+        local hrp = GetHRP()
+        if hrp then
+            State.SavedCFrame = hrp.CFrame
+            antiVoidTgl:Set(true)
+            Window:Notify({ Title = "Done", Message = "Position saved and anti-void enabled.", Type = "success", Duration = 2 })
+        end
+    end,
+})
+
+MyTab:CreateButton({
+    Name     = "5-Second Spin Burst",
+    Desc     = "Big head + max spin for 5 seconds",
+    Callback = function()
+        local c = GetChar()
+        if c and c:FindFirstChild("Head") then c.Head.Size = Vector3.new(8,8,8) end
+        State.SpinSpeed = 20
+        spinTgl:Set(true)
+        task.delay(5, function()
+            spinTgl:Set(false)
+            State.SpinSpeed = 5
+            local c2 = GetChar()
+            if c2 and c2:FindFirstChild("Head") then c2.Head.Size = Vector3.new(2,1,1) end
+        end)
+    end,
+})
+
+MyTab:CreateButton({
+    Name     = "Full Reset Everything",
+    Desc     = "Turn off all features and restore defaults",
+    Callback = function()
+        flyTgl:Set(false)
+        noclipTgl:Set(false)
+        godTgl:Set(false)
+        espTgl:Set(false)
+        invisTgl:Set(false)
+        spinTgl:Set(false)
+        ragdollTgl:Set(false)
+        autoHealTgl:Set(false)
+        workspace.Gravity   = OrigGravity
+        Lighting.ClockTime  = 14
+        Lighting.Brightness = 1
+        Lighting.FogEnd     = 10000
+        local hum = GetHum()
+        if hum then
+            hum.WalkSpeed = 16
+            hum.JumpPower = 50
+            hum.Health    = hum.MaxHealth
+        end
+        statusLbl:Set("Status: Reset complete!")
+        Window:Notify({ Title = "Reset", Message = "All features off, defaults restored.", Type = "info", Duration = 3 })
+    end,
+})
+
+MyTab:CreateSeparator()
+MyTab:CreateSection("LIVE INFO")
+
+local infoLbl = MyTab:CreateLabel("Press Refresh to see stats.")
+
+MyTab:CreateTextBox({
+    Name         = "Custom Walk Speed",
+    Default      = "16",
+    Numeric      = true,
+    ClearOnFocus = true,
+    Callback     = function(v)
+        local n = tonumber(v)
+        if n then
+            local hum = GetHum()
+            if hum then hum.WalkSpeed = n end
+        end
+    end,
+})
+
+MyTab:CreateButton({
+    Name     = "Refresh Stats",
+    Callback = function()
+        local hum = GetHum()
+        local hrp = GetHRP()
+        if hum and hrp then
+            local p = hrp.Position
+            infoLbl:Set(string.format(
+                "HP: %.0f/%.0f  Speed: %.0f  Pos: %.0f, %.0f, %.0f",
+                hum.Health, hum.MaxHealth, hum.WalkSpeed, p.X, p.Y, p.Z
+            ))
+        else
+            infoLbl:Set("Character not loaded yet.")
+        end
+    end,
+})
 ```
 
 ---
 
-*KaolinHub v2.0 Documentation | Created by kakavpopee | "Like Bricks, Built Solid."*
+*KaolinHub v3.0 Documentation · kakavpopee · "Like Bricks, Built Solid."*  
 *GitHub: https://github.com/kakavpopee/KaolinLib*
